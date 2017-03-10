@@ -1,0 +1,72 @@
+import os
+import sys
+sys.path.append("/Library/Python/2.7/site-packages/SpatialPyramidPooling")
+
+import numpy as np
+from keras.models import Sequential
+from keras.layers import Convolution2D, Activation, MaxPooling2D, Dense,Dropout,Flatten
+from SpatialPyramidPooling import SpatialPyramidPooling
+
+
+from keras.utils import np_utils
+import numpy as np
+import cv2
+import os
+import pandas as pd
+
+
+X_train=[]
+Y_train=[]
+
+count=0
+for file in os.listdir("/Users/sarthakgupta/Desktop/32"):
+    count=count+1
+    
+    filename = "/Users/sarthakgupta/Desktop/32/"+file;
+   # print(filename)
+    image=cv2.imread(filename);
+   # print(image)
+    image = cv2.resize(image,(32,32))
+    x_train = np.array(image.flatten())
+    
+   
+    X_train = np.append(X_train,x_train)
+   
+    if count==10:
+        break
+print(X_train.shape)
+
+
+
+X_train = np.array(X_train)
+X_train = X_train.reshape(10,32,32,3)
+print(X_train.shape)
+Y_train =[[1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10],[1,2,3,4,5,6,7,8,9,10]]
+Y_train = np.array(Y_train)
+Y_train=Y_train.reshape(10,10)
+print(Y_train.shape)
+
+X_train =X_train.astype('float32')
+
+X_train /= 255
+
+
+batch_size = 5
+num_channels = 1
+num_classes =1
+
+model = Sequential()
+model.add(Convolution2D(32, 3, 3, activation='relu', input_shape=(None,None,3)))
+model.add(Convolution2D(32,3,3,activation='relu'))
+model.add(MaxPooling2D(pool_size=(2,2)))
+model.add(Dropout(0.25))
+model.add(SpatialPyramidPooling([1, 2, 4]))
+model.add(Dense(128,activation='relu'))
+model.add(Dropout(0.5))
+model.add(Dense(10,activation='softmax'))
+model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
+model.fit(X_train,Y_train,batch_size=32,nb_epoch=1,verbose=1)
+
+
+
+    
