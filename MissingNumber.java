@@ -31,3 +31,19 @@ public class MissingNumber {
 	}
 	
 }
+
+******************************** * * * * * * ** * * * **  * * * * * **  ** *  * * ** ** * *  *
+public class MissingNumber_1 {
+
+	public static void main(String[] args){
+		int[] a = {1,2,3,4,6,7};
+		int x=0 ; int y=0;
+		for(int i=0;i<=a.length;i++){
+			x = x^(i+1);
+		}
+		for(int i=0;i<a.length;i++){
+			y=y^a[i];
+		}
+		System.out.println("The missing number would be "+(x^y));
+	}
+}
